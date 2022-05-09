@@ -1,0 +1,97 @@
+.cursor {
+    background: black;
+    width: 2px !important;
+}
+
+#editor {
+    width: 600px;
+    height: 600px;
+    border: 1px solid grey;
+    display: inline;
+    float: left;
+}
+
+#chat-input {
+    position: absolute;
+    width: 230px;
+    margin-top: 515px;
+}
+
+#chat-send {
+    position: absolute;
+    right: 20px;
+    margin-top: 515px;
+}
+
+.chat {
+    width: 300px;
+    height: 600px;
+    float: right;
+    background: #7494c0;
+    overflow: hidden;
+}
+
+.chat .title {
+    background: #273246;
+    padding: 10px;
+    text-align: center;
+    font-size: 150%;
+    color: #ffffff;
+}
+
+.chat .contents {
+    padding: 10px;
+    overflow: hidden;
+    line-height: 135%;
+}
+
+.chat .scroll {
+    height: 500px;
+    overflow-x: scroll;
+    overflow-y: scroll;
+}
+
+.chat .post {
+    width: 100%;
+    position: relative;
+    display: block;
+    margin-bottom: 5px;
+    max-width: 80%;
+    clear: both;
+}
+
+.chat .post figure {
+    width: 50px;
+    position: absolute;
+    top: 15px;
+    left: 0;
+    padding: 0;
+    margin: 0;
+}
+
+.chat .post .content {
+    margin-left: 15px;
+}
+
+.chat .post .content .name {
+    font-size: 30%;
+    color: #ffffff;
+}
+
+.chat .post .message {
+    margin: 0;
+    position: relative;
+    padding: 5px;
+    border-radius: 20px;
+    background-color: #ffffff;
+}
+
+.chat .post .message::after {
+    content: '';
+    position: absolute;
+    display: block;
+    width: 0;
+    height: 0;
+    left: -10px;
+    top: 10px;
+}
