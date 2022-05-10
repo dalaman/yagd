@@ -20,22 +20,57 @@ public class MessageParser {
         }
         HashMap<String, Object> parsed = generateJsonPropertyTree(hoge);
         System.out.println("parsed: " + parsed);
-        ParsedJson jsonObject = getParsedMessage(args[0]);
-        System.out.println("object: " + jsonObject);
+        System.out.println("");
+
+        MessageType fuga = extractMessageTypeFromJson(args[0]);
+        System.out.println(fuga);
         System.out.println("");
     }
 
-    public static ParsedJson getParsedMessage(String rawJson) {
+    // 使われない予定
+    // public static ParsedJson getParsedMessage(String rawJson) {
+    //     Token[] tokenList = generateTokenList(rawJson);
+    //     HashMap<String, Object> jsonMap = generateJsonPropertyTree(tokenList);
+    //     HashMap<String, Object> header = (HashMap<String, Object>) jsonMap.get("header");
+    //     switch (header.get("type").toString()) {
+    //         case "TEXT":
+    //             return new ParsedJson(jsonMap.get("content").toString(), header.get("name").toString(), ContentType.TEXT);
+    //         case "CHAT":
+    //             return new ParsedJson(jsonMap.get("content").toString(), header.get("name").toString(), ContentType.CHAT);
+    //     }
+    //     return new ParsedJson();
+    // }
+
+    // jsonで送られてきたメッセージの種類を判別する。
+    public static MessageType extractMessageTypeFromJson(String rawJson) {
         Token[] tokenList = generateTokenList(rawJson);
         HashMap<String, Object> jsonMap = generateJsonPropertyTree(tokenList);
-        HashMap<String, Object> header = (HashMap<String, Object>) jsonMap.get("header");
-        switch (header.get("type").toString()) {
-            case "TEXT":
-                return new ParsedJson(jsonMap.get("content").toString(), header.get("name").toString(), ContentType.TEXT);
-            case "CHAT":
-                return new ParsedJson(jsonMap.get("content").toString(), header.get("name").toString(), ContentType.CHAT);
+        if(jsonMap.get("header") == null) {
+            return MessageType.ERROR;
         }
-        return new ParsedJson();
+
+        HashMap<?, ?> header = (HashMap<?, ?>) jsonMap.get("header");
+        if(header == null) {
+            return MessageType.ERROR;
+        }
+
+        var unsafeType = header.get("hoge");
+        if(unsafeType == null) {
+            return MessageType.ERROR;
+        }
+
+        String type = unsafeType.toString();
+
+        switch (type) {
+            case "TEXT":
+                return MessageType.TEXT;
+            case "CHAT":
+                return MessageType.CHAT;
+            case "CURSOR":
+                return MessageType.CURSOR;
+            default:
+                return MessageType.ERROR;
+        }
     }
 
     private static Token[] generateTokenList(String rawJson) {
@@ -201,5 +236,19 @@ public class MessageParser {
         openedParentheses,
         colon,
         comma,
+    }
+
+    public enum MessageType {
+        // 編集してるドキュメントそのもののデータが送られてきたことを指す
+        TEXT,
+
+        // チャットのメッセージが送られてきたことを示す
+        CHAT,
+
+        // カーソル位置が送られてきたことを示す
+        CURSOR,
+
+        // パース中にエラーが発生したらこれが出てくる
+        ERROR,
     }
 }
