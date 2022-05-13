@@ -1,0 +1,77 @@
+.header-container {
+    background: linear-gradient(white, red);
+    height: 225px;
+    border: 2px solid;
+    border-color: black;
+}
+
+.search-box {
+    margin-top: 5px;
+    margin-right: 5px;
+}
+
+.header {
+    font-family: "Helvetica Neue", "Arial", sans-serif;
+    text-align: center;
+    color: white;
+    font-weight: bold;
+}
+
+.header .icon {
+    height: 50px;
+    display: inline-block;
+    vertical-align: bottom;
+    margin-right: 10px;
+}
+
+.header .yagd-name {
+    font-size: 50px;
+    display: inline-block;
+}
+
+.header .desc {
+    margin-top: 30px;
+    font-style: italic;
+    font-size: 25px;
+}
+
+.you-and-java {
+    color: grey;
+    font-family: "Helvetica Neue", "Arial", sans-serif;
+    text-align: center;
+    margin-top: 30px;
+}
+
+.download-button {
+    width: 220px;
+    height: 50px;
+    color: white;
+    background: linear-gradient(to bottom, #f08080, #ff0000);
+}
+
+.centered-item {
+    text-align: center;
+}
+
+.righted-item {
+    text-align: right;
+}
+
+.footer {
+    height: 50px;
+    background: lightgrey;
+    color: grey;
+    padding-top: 10px;
+}
+
+hr {
+    margin-top: 150px;
+    border-top: 2px solid grey;
+}
+
+li {
+    margin-top: 50px;
+    padding-right: 30px;
+    display: inline-block;
+    font-family: "Helvetica Neue", "Arial", sans-serif;
+}
