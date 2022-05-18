@@ -1,0 +1,33 @@
+@startuml hoge
+
+actor Client
+participant Session
+participant SessionManager
+participant MessageParser
+participant Model
+participant 他のSessionたち as Sessions
+actor 他のClientたち as Clients
+
+group 書き込み要請
+    Client -> Session : 書き込み(書き込み内容)
+    Session -> SessionManager : UpdateText(書き込み内容)
+    activate SessionManager
+end
+
+group 送られてきた内容を元にサーバーの状態を最新のものに変更
+    SessionManager -> MessageParser : getParsedMessage(書き込み内容)
+    activate MessageParser
+    MessageParser -> SessionManager : 情報をJsonから取り出したものを返す
+    deactivate MessageParser
+    SessionManager -> Model : updateModel(ParsedJson) \n送られてきた情報をModelに保存する.\ne.g. 文書の内容、カーソル位置、、、
+end
+
+group 変更をすべてのクライアントに送信
+    SessionManager -> Sessions : sendMessageToClient(書き込み内容)
+    SessionManager -> Session : sendMessageToClient(書き込み内容)
+    deactivate SessionManager
+    Sessions -> Clients : 書き込み内容 をそのまま送る
+    Session -> Client : 書き込み内容 をそのまま送る
+end
+
+@enduml

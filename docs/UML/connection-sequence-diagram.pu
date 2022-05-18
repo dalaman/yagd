@@ -1,0 +1,33 @@
+@startuml fuga
+
+actor 新しい接続元 as Client
+participant 新しいSession as Session
+participant SessionManager
+participant Model
+participant MessageParser
+
+group 接続の確立
+    Client -> SessionManager : 繋がりたいです
+    activate SessionManager
+    SessionManager -> Session ** : 作成
+    Session -> Client : 繋がりました
+end
+
+group 現在のドキュメントの状態を送信
+    SessionManager -> Model : outputModel()
+    activate Model
+    Model -> MessageParser : generateJson(Modelが保持してる現在の状態)
+    activate MessageParser
+    MessageParser -> Model : Modelが持ってる状態をJsonに変換したやつを返す
+    deactivate MessageParser
+    Model -> SessionManager : outputModel()の戻り値として現在の状態をJsonにしたやつを返す
+
+    SessionManager -> Session : sendMessageToClient(状態をJsonにしたやつ)
+    deactivate SessionManager
+
+    activate Session
+    Session -> Client : 今の状態こんな感じです
+    deactivate Session
+end
+
+@enduml
