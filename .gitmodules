@@ -1,0 +1,3 @@
+[submodule "client/yagd-client"]
+	path = client/yagd-client
+	url = git@github.com:dalaman/yagd-client.git

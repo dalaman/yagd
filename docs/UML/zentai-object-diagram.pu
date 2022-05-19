@@ -1,0 +1,52 @@
+@startuml 全体のオブジェクト図
+
+package Client1 {
+    object ClientFrontend1 {
+        React.js
+        WebSocket
+    }
+
+    object ClientBackend1 {
+        WebSocket
+        Socket
+    }
+}
+
+package Server {
+    object SessionManager {
+        ServerSocket
+    }
+    object Session1 {
+        Socket
+    }
+    object Session2 {
+        Socket
+    }
+    object Session3 {
+        Socket
+    }
+}
+
+package Client2 {
+    object ClientFrontend2
+    object ClientBackend2
+}
+
+package Client3 {
+    object ClientFrontend3
+    object ClientBackend3
+}
+
+SessionManager *-- Session1
+SessionManager *-- Session2
+SessionManager *-- Session3
+
+ClientFrontend1 -- ClientBackend1 : WebSocketで通信
+ClientFrontend2 -- ClientBackend2
+ClientFrontend3 -- ClientBackend3
+
+ClientBackend1 - Session1 : Socket通信
+ClientBackend2 - Session2
+ClientBackend3 - Session3
+
+@enduml
