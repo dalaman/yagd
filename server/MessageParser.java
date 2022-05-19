@@ -20,22 +20,6 @@ public class MessageParser {
         }
         HashMap<String, Object> parsed = generateJsonPropertyTree(hoge);
         System.out.println("parsed: " + parsed);
-        ParsedJson jsonObject = getParsedMessage(args[0]);
-        System.out.println("object: " + jsonObject);
-        System.out.println("");
-    }
-
-    public static ParsedJson getParsedMessage(String rawJson) {
-        Token[] tokenList = generateTokenList(rawJson);
-        HashMap<String, Object> jsonMap = generateJsonPropertyTree(tokenList);
-        HashMap<String, Object> header = (HashMap<String, Object>) jsonMap.get("header");
-        switch (header.get("type").toString()) {
-            case "TEXT":
-                return new ParsedJson(jsonMap.get("content").toString(), header.get("name").toString(), ContentType.TEXT);
-            case "CHAT":
-                return new ParsedJson(jsonMap.get("content").toString(), header.get("name").toString(), ContentType.CHAT);
-        }
-        return new ParsedJson();
     }
 
     private static Token[] generateTokenList(String rawJson) {
