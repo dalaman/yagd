@@ -15,7 +15,7 @@ import java.util.ArrayList;
 //     * if one session got changed => notify this change for all sessions
 
 public class SessionManager {
-    public static final int PORT = 8080; // FIXME: port num
+    public static final int PORT = 8081; // FIXME: port num
 
     private static ArrayList<Session> sessionList = new ArrayList<>();
     private static String model = "";
