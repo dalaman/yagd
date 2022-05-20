@@ -4,9 +4,8 @@ import java.util.HashMap;
 
 public class MessageParser {
     public static void main(String[] args) {
-        // Token[] hoge = generateTokenList("    {      \"aa\\\"   a\"      :   \n        \"aaaaaa\"    }");
-        // for (Token aaa : hoge) {
-            // System.out.println(aaa);
+        // Token[] hoge = generateTokenList("    {      \"aa\\\"   a\"      :   \n        \"aaaaaa\"
+        // }"); for (Token aaa : hoge) { System.out.println(aaa);
         // }
         // HashMap<String, Object> parsed = generateJsonPropertyTree(hoge);
         // System.out.println("parsed: " + parsed);
@@ -30,10 +29,10 @@ public class MessageParser {
         Boolean isInNumber = false;
         Boolean isDouble = false;
 
-        for (int i=0; i<rawJson.length(); i++) {
+        for (int i = 0; i < rawJson.length(); i++) {
             final char focused = rawJson.charAt(i);
 
-            if (isInString && i!=0) {
+            if (isInString && i != 0) {
                 final Boolean escaped = rawJson.charAt(i - 1) == '\\';
                 if (!escaped && focused == '"') {
                     isInString = !isInString;
@@ -44,7 +43,7 @@ public class MessageParser {
                 }
                 continue;
             }
-            if(isInNumber) {
+            if (isInNumber) {
                 switch (focused) {
                     case '.':
                         isDouble = true;
@@ -61,7 +60,9 @@ public class MessageParser {
                         tmpContent = tmpContent + focused;
                         continue;
                     default:
-                        tmpTokenList.add(new Token(isDouble ? TokenType.doubleNumber : TokenType.integerNumber, tmpContent));
+                        tmpTokenList.add(
+                            new Token(isDouble ? TokenType.doubleNumber : TokenType.integerNumber,
+                                tmpContent));
                         tmpContent = "";
                         isInNumber = false;
                         isDouble = false;
@@ -100,40 +101,44 @@ public class MessageParser {
             }
         }
 
-        return (Token[]) tmpTokenList.toArray(new Token[]{});
+        return (Token[]) tmpTokenList.toArray(new Token[] {});
     }
 
     private static HashMap<String, Object> generateJsonPropertyTree(Token[] tokenList) {
         HashMap<String, Object> content = new HashMap<String, Object>();
 
         if (tokenList.length > 1) {
-            for (int i=1; i<tokenList.length; i++) {
+            for (int i = 1; i < tokenList.length; i++) {
                 Token focusedToken = tokenList[i];
 
-                if (focusedToken.type == TokenType.string || focusedToken.type == TokenType.integerNumber || focusedToken.type == TokenType.doubleNumber) {
-
-                    if (tokenList[i+1].type == TokenType.colon) {
-                        switch (tokenList[i+2].type) {
+                if (focusedToken.type == TokenType.string
+                    || focusedToken.type == TokenType.integerNumber
+                    || focusedToken.type == TokenType.doubleNumber) {
+                    if (tokenList[i + 1].type == TokenType.colon) {
+                        switch (tokenList[i + 2].type) {
                             case openedParentheses:
-                                int startIndex = i+2;
+                                int startIndex = i + 2;
                                 int closeIndex = findCloseParenthesis(tokenList, startIndex);
-                                Token[] subTokenList = Arrays.copyOfRange(tokenList, startIndex, closeIndex+1);
-                                HashMap<String, Object> tmp = generateJsonPropertyTree(subTokenList);
+                                Token[] subTokenList =
+                                    Arrays.copyOfRange(tokenList, startIndex, closeIndex + 1);
+                                HashMap<String, Object> tmp =
+                                    generateJsonPropertyTree(subTokenList);
                                 content.put(focusedToken.content, tmp);
                                 i = closeIndex;
                                 break;
                             case string:
-                                content.put(focusedToken.content, tokenList[i+2].content);
+                                content.put(focusedToken.content, tokenList[i + 2].content);
                                 break;
                             case integerNumber:
-                                content.put(focusedToken.content, Integer.parseInt(tokenList[i+2].content));
+                                content.put(focusedToken.content,
+                                    Integer.parseInt(tokenList[i + 2].content));
                                 break;
                             case doubleNumber:
-                                content.put(focusedToken.content, Double.parseDouble(tokenList[i+2].content));
+                                content.put(focusedToken.content,
+                                    Double.parseDouble(tokenList[i + 2].content));
                                 break;
                         }
                     }
-
                 }
             }
         }
@@ -145,7 +150,7 @@ public class MessageParser {
     private static int findCloseParenthesis(Token[] tokenList, int startIndex) {
         int nestedNum = 1;
 
-        for (int i=startIndex + 1; i<tokenList.length; i++) {
+        for (int i = startIndex + 1; i < tokenList.length; i++) {
             if (tokenList[i].type == TokenType.openedParentheses) {
                 nestedNum++;
             }

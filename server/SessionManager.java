@@ -56,11 +56,10 @@ public class SessionManager {
             while (true) {
                 Socket socket = serverSocket.accept();
                 SessionManager.logging("Connection accepted: " + socket);
-                Session newSession =
-                    new Session(socket, /* id= */ clientCount++, (newData) -> {
-                        SessionManager.updateText(newData);
-                        SessionManager.notifyChangesToAllSession(newData);
-                    });
+                Session newSession = new Session(socket, /* id= */ clientCount++, (newData) -> {
+                    SessionManager.updateText(newData);
+                    SessionManager.notifyChangesToAllSession(newData);
+                });
                 sessionList.add(newSession);
             }
         } finally {
