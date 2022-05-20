@@ -19,7 +19,7 @@ public class IModel {
         CURSOR.put(id, newCURSOR);
     }
 
-    // Put Model in array and Output
+    // Put Model in array, and Output
     public String[] outputModel(){
         String model[] = new String[CURSOR.size()+1];
         int i = 0;

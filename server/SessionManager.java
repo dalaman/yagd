@@ -62,7 +62,7 @@ public class SessionManager {
     }
 
 
-    // For new Session: Send Model
+    //For new Session: Send Model
     private static void sendModelToNewSession(String[] model, Session newSession){
         for(int i=0; i<model.length; i++){
             try{

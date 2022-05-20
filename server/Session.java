@@ -29,8 +29,6 @@ class Session extends Thread {
         this.is = this.socket.getInputStream();
         this.in = new BufferedReader(new InputStreamReader(this.is));
         this.os = this.socket.getOutputStream();
-
-        // TODO: use id; e.g. cursor, name...
         this.id = id;
 
         //this.handShake(in, this.os);
