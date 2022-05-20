@@ -1,23 +1,35 @@
+import java.util.HashMap;
+import java.util.Map;
+
 public class IModel {
+    StringBuffer TEXT;
+    Map<Integer, String> CURSOR; 
     
-    //static int id;
-    //static void cursor;
-    static StringBuffer text = new StringBuffer("");
-    
-    public static void updateTEXT(String newTEXT){
-        int length = text.length();
-        text.replace(0, length, newTEXT);       
+    public IModel(){
+        this.TEXT = new StringBuffer(""); //TEXT
+        this.CURSOR = new HashMap<>();
     }
 
-    public static void updateCHAT(String newCHAT){
-
+    public void updateTEXT(String newTEXT){
+        int length = TEXT.length();
+        TEXT.replace(0, length, newTEXT);       
     }
 
-    public static void updateCURSOR(String newCURSOR){
-
+    public void updateCURSOR(String newCURSOR, int id){
+        CURSOR.put(id, newCURSOR);
     }
 
-    public static String outputModel(){
-        return new String(text);
+    // Put Model in array and Output
+    public String[] outputModel(){
+        String model[] = new String[CURSOR.size()+1];
+        int i = 0;
+        model[0] = new String(TEXT);
+        for(String val : CURSOR.values()){
+            if(i<CURSOR.size()){
+                model[i+1] = val;
+            }
+            i++;
+        }
+        return model;
     }
 }

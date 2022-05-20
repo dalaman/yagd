@@ -17,6 +17,8 @@ public class SessionManager {
     public static final int PORT = 8080; // FIXME: port num
 
     private static ArrayList<Session> sessionList = new ArrayList<>();
+    private static IModel model = new IModel();
+
 
     private static void logging(String context) {
         System.out.println("[SessionManager] " + context);
@@ -31,20 +33,46 @@ public class SessionManager {
         }
     }
 
-    public static void updateText(String newText) {
+    public static void updateModel(String newText, int id) {
         if(MessageParser.extractMessageTypeFromJson(newText) == MessageType.TEXT){
-            IModel.updateTEXT(newText);
+            model.updateTEXT(newText);
+            SessionManager.notifyChangesToAllSession(new String(model.TEXT));
         }else if(MessageParser.extractMessageTypeFromJson(newText) == MessageType.CHAT){
-            IModel.updateCHAT(newText);
+            SessionManager.notifyChangesToAllSession(newText);
         }else if(MessageParser.extractMessageTypeFromJson(newText) == MessageType.CURSOR){
-            IModel.updateCURSOR(newText);
+            model.updateCURSOR(newText,id);
+            SessionManager.notifyChangesToAllSession(newText);
+        }else if(MessageParser.extractMessageTypeFromJson(newText) == MessageType.ERROR){
+            // ...
         }
-        SessionManager.notifyChangesToAllSession();
     }
 
-    private static void notifyChangesToAllSession() {
-        // TODO 各SessionにModelが変わったことを通知する。
-        sessionList.forEach(session -> session.sendMessageToClient(IModel.outputModel()));
+
+    // For all Sessions: Send Changes
+    private static void notifyChangesToAllSession(String message) {
+        for (Session session : sessionList) {
+            try {
+                session.sendMessageToClient(message);
+            } catch (UnsupportedEncodingException e) {
+                SessionManager.logging("Err: " + e);
+            } catch (IOException e) {
+                SessionManager.logging("Err: " + e);
+            }
+        }
+    }
+
+
+    // For new Session: Send Model
+    private static void sendModelToNewSession(String[] model, Session newSession){
+        for(int i=0; i<model.length; i++){
+            try{
+                newSession.sendMessageToClient(model[i]);
+            } catch(UnsupportedEncodingException e) {
+                e.printStackTrace();
+            } catch(IOException e){
+                e.printStackTrace();
+            }
+        }
     }
 
     public static void main(String[] args) throws IOException {
@@ -58,8 +86,9 @@ public class SessionManager {
             while (true) {
                 Socket socket = serverSocket.accept();
                 SessionManager.logging("Connection accepted: " + socket);
-                Session newSession = new Session(socket);
+                Session newSession = new Session(socket, /* ID */ SessionManager.sessionList.size());
                 sessionList.add(newSession);
+                SessionManager.sendModelToNewSession(model.outputModel(), newSession); // Send Model
             }
         } finally {
             serverSocket.close();

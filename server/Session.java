@@ -58,7 +58,7 @@ class Session extends Thread {
 
                 this.logging("From:\t" + this.socket);
                 this.logging("Ctx:\t" + line + "\n");
-                SessionManager.updateText(line);
+                SessionManager.updateModel(line, this.id);
             }
         } catch (Exception e) {
             this.logging("Err: " + e);
