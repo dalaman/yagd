@@ -7,26 +7,27 @@ import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
 
 public class WebSocketClient {
-    
     /**
      * インスタンス作り方、メッセージ受信時の処理の書き方：
      * コンストラクタにメッセージが来た時の処理を表す関数を渡す。引数は文字列1つで戻り値はvoid。プロBでやってる高階関数みたいな感じ。
-     * 
+     *
      * 例：
      * WebSocketClient hoge = new WebSocketClient( (text) -> {
      *     // ここに処理を書く。textには受け取ったメッセージが入ってる。
-     *     System.out.println(text); //この場合、フロントからメッセージを受け取るたびにその内容を標準出力にプリントすることになる。
+     *     System.out.println(text);
+     * //この場合、フロントからメッセージを受け取るたびにその内容を標準出力にプリントすることになる。
      * } );
-     * 
-     * 
+     *
+     *
      * メッセージ送り方：
      * sendText()関数を呼び出すだけ。
-     * 
+     *
      * 例：
      * hoge.sendText("aaaaaaaaaaaaaaaaaaaaa"); // aaaaaaaaaaaaaaaaaaaaaaaがフロントに送られる。
      */
 
     private WebSocket webSocket;
+    private final String webSocketPort;
 
     public void sendText(String text) {
         webSocket.sendText(text, true);
@@ -36,7 +37,9 @@ public class WebSocketClient {
         webSocket.sendClose(WebSocket.NORMAL_CLOSURE, "close_connection");
     }
 
-    public WebSocketClient(Consumer<String> onMessage) {
+    public WebSocketClient(String webSocketPort, Consumer<String> onMessage) {
+        this.webSocketPort = webSocketPort;
+
         HttpClient client = HttpClient.newHttpClient();
         WebSocket.Builder wsb = client.newWebSocketBuilder();
 
@@ -55,7 +58,8 @@ public class WebSocketClient {
         };
 
         // 接続開始
-        CompletableFuture<WebSocket> comp = wsb.buildAsync(URI.create("ws://localhost:8080/ws"), listener);
+        CompletableFuture<WebSocket> comp =
+            wsb.buildAsync(URI.create("ws://localhost:" + webSocketPort + "/ws"), listener);
 
         // 接続完了
         // エラー握りつぶしまくってるので良くない

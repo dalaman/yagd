@@ -14,6 +14,6 @@ format: ${JAVA_FILES}
 	@clang-format -i ${JAVA_FILES}
 
 clean:
-	@yes | rm $(shell ls ./**/*.class)
+	@yes | rm -f $(shell ls ./**/*.class)
 
 .PHONY: run format clean
