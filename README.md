@@ -6,16 +6,30 @@
 
 ## Requirements
 
--   _Node_ ver.x.x
+-   _Node_ v16.15.0
 
--   _Yarn_ ver.x.x
+-   _OpenJDK_ v11.0
 
--   _Java_ ver.x.x
+    ### Dev only
+
+    -   _Make_
+
+    -   _clang-format_
+
+    -   _Yarn_
 
 ## Setup
 
-1.  Install node lib by `cd client/frontend && yarn install`
+1.  Init & update submodule by `git submodule init && git submodule update`
+
+2.  Setup [submodule](https://github.com/dalaman/yagd-client)
 
 ## うさげ
 
 1.  Launch server by `make`
+
+2.  Start client
+
+    1.  `cd client/yagd-client`
+
+    2.  `yarn dev`
