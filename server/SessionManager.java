@@ -18,7 +18,8 @@ public class SessionManager {
 
     private static int clientCount = 0;
     private static ArrayList<Session> sessionList = new ArrayList<>();
-    private static String model = "";
+    private static IModel model = new IModel();
+
 
     private static void logging(String context) {
         System.out.println("[SessionManager] " + context);
@@ -33,15 +34,34 @@ public class SessionManager {
         }
     }
 
-    public static void updateText(String newText) {
-        SessionManager.model = newText;
+
+    public static void updateModel(String newText, int id) {
+        if(MessageParser.extractMessageTypeFromJson(newText) == MessageType.TEXT){
+            model.updateTEXT(newText);
+            SessionManager.notifyChangesToAllSession(new String(model.TEXT));
+        }else if(MessageParser.extractMessageTypeFromJson(newText) == MessageType.CHAT){
+            SessionManager.notifyChangesToAllSession(newText);
+        }else if(MessageParser.extractMessageTypeFromJson(newText) == MessageType.CURSOR){
+            model.updateCURSOR(newText,id);
+            SessionManager.notifyChangesToAllSession(newText);
+        }else if(MessageParser.extractMessageTypeFromJson(newText) == MessageType.ERROR){
+            // ...
+        }
     }
 
-    // HACK: make clean
-    private static void notifyChangesToAllSession(String newText) {
-        // TODO 各SessionにModelが変わったことを通知する。
+
+    // For all Sessions: Send Changes
+    private static void notifyChangesToAllSession(String message) {
         for (Session session : sessionList) {
-            session.sendMessageToClient(newText);
+            session.sendMessageToClient(message);
+        }
+    }
+
+
+    //For new Session: Send Model
+    private static void sendModelToNewSession(String[] model, Session newSession){
+        for(int i=0; i<model.length; i++){
+            newSession.sendMessageToClient(model[i]);
         }
     }
 
@@ -52,18 +72,20 @@ public class SessionManager {
 
         try {
             // TODO:
-            // ここ怪しい。Ctrl-Cとかで強制終了した時にちゃんとServerSocket.close()が呼ばれるかとか知らずに書いてる。
+            // ayasii
             while (true) {
                 Socket socket = serverSocket.accept();
                 SessionManager.logging("Connection accepted: " + socket);
-                Session newSession = new Session(socket, /* id= */ clientCount++, (newData) -> {
-                    SessionManager.updateText(newData);
+                final int clientCountNow = clientCount++;
+                Session newSession = new Session(socket, /* id= */ clientCountNow, (newData) -> {
+                    SessionManager.updateModel(newData, clientCountNow);
                     SessionManager.notifyChangesToAllSession(newData);
                 });
                 sessionList.add(newSession);
+                SessionManager.sendModelToNewSession(model.outputModel(), newSession); // Send Model
             }
         } finally {
             serverSocket.close();
-        }
+        } 
     }
 }
