@@ -20,7 +20,6 @@ public class SessionManager {
     private static ArrayList<Session> sessionList = new ArrayList<>();
     private static IModel model = new IModel();
 
-
     private static void logging(String context) {
         System.out.println("[SessionManager] " + context);
     }
@@ -34,21 +33,19 @@ public class SessionManager {
         }
     }
 
-
     public static void updateModel(String newText, int id) {
-        if(MessageParser.extractMessageTypeFromJson(newText) == MessageType.TEXT){
+        if (MessageParser.extractMessageTypeFromJson(newText) == MessageType.TEXT) {
             model.updateTEXT(newText);
             SessionManager.notifyChangesToAllSession(new String(model.TEXT));
-        }else if(MessageParser.extractMessageTypeFromJson(newText) == MessageType.CHAT){
+        } else if (MessageParser.extractMessageTypeFromJson(newText) == MessageType.CHAT) {
             SessionManager.notifyChangesToAllSession(newText);
-        }else if(MessageParser.extractMessageTypeFromJson(newText) == MessageType.CURSOR){
-            model.updateCURSOR(newText,id);
+        } else if (MessageParser.extractMessageTypeFromJson(newText) == MessageType.CURSOR) {
+            model.updateCURSOR(newText, id);
             SessionManager.notifyChangesToAllSession(newText);
-        }else if(MessageParser.extractMessageTypeFromJson(newText) == MessageType.ERROR){
+        } else if (MessageParser.extractMessageTypeFromJson(newText) == MessageType.ERROR) {
             // ...
         }
     }
-
 
     // For all Sessions: Send Changes
     private static void notifyChangesToAllSession(String message) {
@@ -57,10 +54,9 @@ public class SessionManager {
         }
     }
 
-
-    //For new Session: Send Model
-    private static void sendModelToNewSession(String[] model, Session newSession){
-        for(int i=0; i<model.length; i++){
+    // For new Session: Send Model
+    private static void sendModelToNewSession(String[] model, Session newSession) {
+        for (int i = 0; i < model.length; i++) {
             newSession.sendMessageToClient(model[i]);
         }
     }
@@ -86,6 +82,6 @@ public class SessionManager {
             }
         } finally {
             serverSocket.close();
-        } 
+        }
     }
 }

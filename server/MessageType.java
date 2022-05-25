@@ -1,13 +1,9 @@
 public enum MessageType {
-        // 編集してるドキュメントそのもののデータが送られてきたことを指す
-        TEXT,
+    TEXT,
 
-        // チャットのメッセージが送られてきたことを示す
-        CHAT,
+    CHAT,
 
-        // カーソル位置が送られてきたことを示す
-        CURSOR,
+    CURSOR,
 
-        // パース中にエラーが発生したらこれが出てくる
-        ERROR,
+    ERROR,  // parse error
 }

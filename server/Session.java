@@ -18,7 +18,6 @@ class Session extends Thread {
     final Consumer<String> onReceiveMessage; // pass methoid that invoked with message received
     public final int id;
 
-
     public Session(Socket socket, int id, Consumer<String> onReceiveMessage) throws IOException {
         this.socket = socket;
         this.out = new PrintWriter(
@@ -44,14 +43,12 @@ class Session extends Thread {
         }
     }
 
-
-    // 読み込み待ちするスレッド
+    // listening thread
     @Override
     public void run() {
         System.out.println("Established new session: " + this.socket);
         try {
             while (true) {
-
                 String newText = in.readLine();
                 if (newText.equals("END"))
                     break;
