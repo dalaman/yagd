@@ -25,8 +25,8 @@ public class BackendProcess {
     }
 
     public static void main(String[] args) throws IOException {
-        if (args.length != 1) {
-            BackendProcess.logging("\nErr\nUsage: java BackendProcess [port]");
+        if (args.length != 3) {
+            BackendProcess.logging("\nErr\nUsage: java BackendProcess [websocket_port] [socket_url] [socket_port]");
             System.exit(1);
         }
         final String webSocketPort = args[0];
