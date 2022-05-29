@@ -169,28 +169,32 @@ public class MessageParser {
                     || focusedToken.type == TokenType.integerNumber
                     || focusedToken.type == TokenType.doubleNumber) {
                     if (tokenList[i + 1].type == TokenType.colon) {
-                        switch (tokenList[i + 2].type) {
-                            case openedParentheses:
-                                int startIndex = i + 2;
-                                int closeIndex = findCloseParenthesis(tokenList, startIndex);
-                                Token[] subTokenList =
-                                    Arrays.copyOfRange(tokenList, startIndex, closeIndex + 1);
-                                HashMap<String, Object> tmp =
-                                    generateJsonPropertyTree(subTokenList);
-                                content.put(focusedToken.content, tmp);
-                                i = closeIndex;
-                                break;
-                            case string:
-                                content.put(focusedToken.content, tokenList[i + 2].content);
-                                break;
-                            case integerNumber:
-                                content.put(focusedToken.content,
-                                    Integer.parseInt(tokenList[i + 2].content));
-                                break;
-                            case doubleNumber:
-                                content.put(focusedToken.content,
-                                    Double.parseDouble(tokenList[i + 2].content));
-                                break;
+                        try {
+                            switch (tokenList[i + 2].type) {
+                                case openedParentheses:
+                                    int startIndex = i + 2;
+                                    int closeIndex = findCloseParenthesis(tokenList, startIndex);
+                                    Token[] subTokenList =
+                                        Arrays.copyOfRange(tokenList, startIndex, closeIndex + 1);
+                                    HashMap<String, Object> tmp =
+                                        generateJsonPropertyTree(subTokenList);
+                                    content.put(focusedToken.content, tmp);
+                                    i = closeIndex;
+                                    break;
+                                case string:
+                                    content.put(focusedToken.content, tokenList[i + 2].content);
+                                    break;
+                                case integerNumber:
+                                    content.put(focusedToken.content,
+                                        Integer.parseInt(tokenList[i + 2].content));
+                                    break;
+                                case doubleNumber:
+                                    content.put(focusedToken.content,
+                                        Double.parseDouble(tokenList[i + 2].content));
+                                    break;
+                            }
+                        } catch (ArrayIndexOutOfBoundsException e) {
+                            System.out.println("[MessageParser] parse error. ignore this message.");
                         }
                     }
                 }
