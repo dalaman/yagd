@@ -34,24 +34,32 @@ public class SessionManager {
     }
 
     synchronized public static void updateModel(String newText, int id) {
-        if (MessageParser.extractMessageTypeFromJson(newText) == MessageType.TEXT) {
-            model.updateTEXT(newText);
-            SessionManager.notifyChangesToAllSession(new String(model.TEXT));
-        } else if (MessageParser.extractMessageTypeFromJson(newText) == MessageType.CHAT) {
-            SessionManager.notifyChangesToAllSession(newText);
-        } else if (MessageParser.extractMessageTypeFromJson(newText) == MessageType.CURSOR) {
-            model.updateCURSOR(newText, id);
-            SessionManager.notifyChangesToAllSession(newText);
-        } else if (MessageParser.extractMessageTypeFromJson(newText) == MessageType.EXIT) {
-            // ...
-        } else if (MessageParser.extractMessageTypeFromJson(newText) == MessageType.ERROR) {
-            // ...
+        switch (MessageParser.extractMessageTypeFromJson(newText)) {
+            case CURSOR:
+                model.updateCURSOR(newText, id);
+                break;
+            case TEXT:
+                model.updateTEXT(newText);
+                break;
+            default:
+                break;
         }
     }
 
     // For all Sessions: Send Changes
     private static void notifyChangesToAllSession(String message) {
         for (Session session : sessionList) {
+            session.sendMessageToClient(message);
+        }
+    }
+
+    // For all Sessions: Send Changes
+    private static void notifyChangesToAllSessionExceptMe(String message, Session self) {
+        for (Session session : sessionList) {
+            if (session == self) {
+                logging("same session found! except this.");
+                continue;
+            }
             session.sendMessageToClient(message);
         }
     }
@@ -75,22 +83,22 @@ public class SessionManager {
                 Socket socket = serverSocket.accept();
                 SessionManager.logging("Connection accepted: " + socket);
                 final int clientCountNow = clientCount++;
-                Session newSession = new Session(socket, /* id= */ clientCountNow, (newData) -> {
-                    // add these lines after initializing newSession.
-                    //
-                    // if (MessageParser.extractMessageTypeFromJson(newData) == MessageType.EXIT) {
-                    //     deleteSession(newSession);
-                    // }
-                    SessionManager.updateModel(newData, clientCountNow);
-                    SessionManager.notifyChangesToAllSession(newData);
-                });
+                Session newSession = new Session(socket, /* id= */ clientCountNow, (newData) -> {});
 
                 newSession.onReceiveMessage = (newData) -> {
                     if (MessageParser.extractMessageTypeFromJson(newData) == MessageType.EXIT) {
                         deleteSession(newSession);
+                        return;
                     }
+
                     SessionManager.updateModel(newData, clientCountNow);
-                    SessionManager.notifyChangesToAllSession(newData);
+
+                    if (MessageParser.extractMessageTypeFromJson(newData) == MessageType.TEXT) {
+                        SessionManager.notifyChangesToAllSessionExceptMe(newData, newSession);
+                    } else {
+                        SessionManager.notifyChangesToAllSession(newData);
+                    }
+
                 };
 
                 sessionList.add(newSession);
