@@ -56,7 +56,7 @@ class Session extends Thread {
                 System.out.println("received new message on " + socket);
                 System.out.println("content: " + newText);
                 onReceiveMessage.accept(newText);
-                SessionManager.updateModel(newText, this.id);
+                // SessionManager.updateModel(newText, this.id);
             }
         } catch (Exception e) {
             System.out.println("an error occurred.");
