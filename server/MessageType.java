@@ -5,5 +5,7 @@ public enum MessageType {
 
     CURSOR,
 
+    EXIT,
+
     ERROR, // parse error
 }

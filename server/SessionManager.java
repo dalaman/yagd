@@ -42,6 +42,8 @@ public class SessionManager {
         } else if (MessageParser.extractMessageTypeFromJson(newText) == MessageType.CURSOR) {
             model.updateCURSOR(newText, id);
             SessionManager.notifyChangesToAllSession(newText);
+        } else if (MessageParser.extractMessageTypeFromJson(newText) == MessageType.EXIT) {
+            // ...
         } else if (MessageParser.extractMessageTypeFromJson(newText) == MessageType.ERROR) {
             // ...
         }
@@ -74,9 +76,23 @@ public class SessionManager {
                 SessionManager.logging("Connection accepted: " + socket);
                 final int clientCountNow = clientCount++;
                 Session newSession = new Session(socket, /* id= */ clientCountNow, (newData) -> {
+                    // add these lines after initializing newSession.
+                    //
+                    // if (MessageParser.extractMessageTypeFromJson(newData) == MessageType.EXIT) {
+                    //     deleteSession(newSession);
+                    // }
                     SessionManager.updateModel(newData, clientCountNow);
                     SessionManager.notifyChangesToAllSession(newData);
                 });
+
+                newSession.onReceiveMessage = (newData) -> {
+                    if (MessageParser.extractMessageTypeFromJson(newData) == MessageType.EXIT) {
+                        deleteSession(newSession);
+                    }
+                    SessionManager.updateModel(newData, clientCountNow);
+                    SessionManager.notifyChangesToAllSession(newData);
+                };
+
                 sessionList.add(newSession);
                 SessionManager.sendModelToNewSession(model.outputModel(), newSession); // Send Model
             }

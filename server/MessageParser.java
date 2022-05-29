@@ -68,6 +68,8 @@ public class MessageParser {
                 return MessageType.CHAT;
             case "CURSOR":
                 return MessageType.CURSOR;
+            case "EXIT":
+                return MessageType.EXIT;
             default:
                 return MessageType.ERROR;
         }
