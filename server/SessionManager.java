@@ -33,7 +33,7 @@ public class SessionManager {
         }
     }
 
-    public static void updateModel(String newText, int id) {
+    synchronized public static void updateModel(String newText, int id) {
         if (MessageParser.extractMessageTypeFromJson(newText) == MessageType.TEXT) {
             model.updateTEXT(newText);
             SessionManager.notifyChangesToAllSession(new String(model.TEXT));

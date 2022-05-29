@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 public class MessageParser {
     public static void main(String[] args) {
-        // Token[] hoge = generateTokenList("    {      \"aa\\\"   a\"      :   \n        \"aaaaaa\"
+        // Token[] hoge = generateTokenList(" { \"aa\\\" a\" : \n \"aaaaaa\"
         // }"); for (Token aaa : hoge) { System.out.println(aaa);
         // }
         // HashMap<String, Object> parsed = generateJsonPropertyTree(hoge);
@@ -27,18 +27,19 @@ public class MessageParser {
     }
 
     // public static ParsedJson getParsedMessage(String rawJson) {
-    //     Token[] tokenList = generateTokenList(rawJson);
-    //     HashMap<String, Object> jsonMap = generateJsonPropertyTree(tokenList);
-    //     HashMap<String, Object> header = (HashMap<String, Object>) jsonMap.get("header");
-    //     switch (header.get("type").toString()) {
-    //         case "TEXT":
-    //             return new ParsedJson(jsonMap.get("content").toString(),
-    //             header.get("name").toString(), ContentType.TEXT);
-    //         case "CHAT":
-    //             return new ParsedJson(jsonMap.get("content").toString(),
-    //             header.get("name").toString(), ContentType.CHAT);
-    //     }
-    //     return new ParsedJson();
+    // Token[] tokenList = generateTokenList(rawJson);
+    // HashMap<String, Object> jsonMap = generateJsonPropertyTree(tokenList);
+    // HashMap<String, Object> header = (HashMap<String, Object>)
+    // jsonMap.get("header");
+    // switch (header.get("type").toString()) {
+    // case "TEXT":
+    // return new ParsedJson(jsonMap.get("content").toString(),
+    // header.get("name").toString(), ContentType.TEXT);
+    // case "CHAT":
+    // return new ParsedJson(jsonMap.get("content").toString(),
+    // header.get("name").toString(), ContentType.CHAT);
+    // }
+    // return new ParsedJson();
     // }
 
     // parse json => return get which type
@@ -115,8 +116,8 @@ public class MessageParser {
                         continue;
                     default:
                         tmpTokenList.add(
-                            new Token(isDouble ? TokenType.doubleNumber : TokenType.integerNumber,
-                                tmpContent));
+                                new Token(isDouble ? TokenType.doubleNumber : TokenType.integerNumber,
+                                        tmpContent));
                         tmpContent = "";
                         isInNumber = false;
                         isDouble = false;
@@ -161,23 +162,21 @@ public class MessageParser {
     private static HashMap<String, Object> generateJsonPropertyTree(Token[] tokenList) {
         HashMap<String, Object> content = new HashMap<String, Object>();
 
-        if (tokenList.length > 1) {
-            for (int i = 1; i < tokenList.length; i++) {
-                Token focusedToken = tokenList[i];
+        try {
+            if (tokenList.length > 1) {
+                for (int i = 1; i < tokenList.length; i++) {
+                    Token focusedToken = tokenList[i];
 
-                if (focusedToken.type == TokenType.string
-                    || focusedToken.type == TokenType.integerNumber
-                    || focusedToken.type == TokenType.doubleNumber) {
-                    if (tokenList[i + 1].type == TokenType.colon) {
-                        try {
+                    if (focusedToken.type == TokenType.string
+                            || focusedToken.type == TokenType.integerNumber
+                            || focusedToken.type == TokenType.doubleNumber) {
+                        if (tokenList[i + 1].type == TokenType.colon) {
                             switch (tokenList[i + 2].type) {
                                 case openedParentheses:
                                     int startIndex = i + 2;
                                     int closeIndex = findCloseParenthesis(tokenList, startIndex);
-                                    Token[] subTokenList =
-                                        Arrays.copyOfRange(tokenList, startIndex, closeIndex + 1);
-                                    HashMap<String, Object> tmp =
-                                        generateJsonPropertyTree(subTokenList);
+                                    Token[] subTokenList = Arrays.copyOfRange(tokenList, startIndex, closeIndex + 1);
+                                    HashMap<String, Object> tmp = generateJsonPropertyTree(subTokenList);
                                     content.put(focusedToken.content, tmp);
                                     i = closeIndex;
                                     break;
@@ -186,19 +185,19 @@ public class MessageParser {
                                     break;
                                 case integerNumber:
                                     content.put(focusedToken.content,
-                                        Integer.parseInt(tokenList[i + 2].content));
+                                            Integer.parseInt(tokenList[i + 2].content));
                                     break;
                                 case doubleNumber:
                                     content.put(focusedToken.content,
-                                        Double.parseDouble(tokenList[i + 2].content));
+                                            Double.parseDouble(tokenList[i + 2].content));
                                     break;
                             }
-                        } catch (ArrayIndexOutOfBoundsException e) {
-                            System.out.println("[MessageParser] parse error. ignore this message.");
                         }
                     }
                 }
             }
+        } catch (ArrayIndexOutOfBoundsException e) {
+            System.out.println("[MessageParser] parse error. ignore this message.");
         }
 
         // return new JsonProperty(content);
@@ -219,7 +218,8 @@ public class MessageParser {
 
             if (nestedNum == 0) {
                 return i;
-            };
+            }
+            ;
         }
 
         return -1;
