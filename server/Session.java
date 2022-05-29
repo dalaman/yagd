@@ -15,7 +15,7 @@ class Session extends Thread {
     protected Socket socket;
     protected PrintWriter out;
     protected BufferedReader in;
-    final Consumer<String> onReceiveMessage; // pass methoid that invoked with message received
+    Consumer<String> onReceiveMessage; // pass methoid that invoked with message received
     public final int id;
 
     public Session(Socket socket, int id, Consumer<String> onReceiveMessage) throws IOException {
