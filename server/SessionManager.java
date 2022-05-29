@@ -54,10 +54,9 @@ public class SessionManager {
     }
 
     // For all Sessions: Send Changes
-    private static void notifyChangesToAllSessionExceptMe(String message, Session self) {
+    private static void notifyChangesToAllSessionExceptMe(String message, int selfId) {
         for (Session session : sessionList) {
-            if (session == self) {
-                logging("same session found! except this.");
+            if (session.id == selfId) {
                 continue;
             }
             session.sendMessageToClient(message);
@@ -94,7 +93,7 @@ public class SessionManager {
                     SessionManager.updateModel(newData, clientCountNow);
 
                     if (MessageParser.extractMessageTypeFromJson(newData) == MessageType.TEXT) {
-                        SessionManager.notifyChangesToAllSessionExceptMe(newData, newSession);
+                        SessionManager.notifyChangesToAllSessionExceptMe(newData, clientCountNow);
                     } else {
                         SessionManager.notifyChangesToAllSession(newData);
                     }

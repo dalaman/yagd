@@ -55,7 +55,7 @@ public class MessageParser {
             return MessageType.ERROR;
         }
 
-        Object unsafeType = header.get("hoge");
+        Object unsafeType = header.get("type");
         if (unsafeType == null) {
             return MessageType.ERROR;
         }
