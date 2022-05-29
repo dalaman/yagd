@@ -26,10 +26,19 @@ public class BackendProcess {
 
     public static void main(String[] args) throws IOException {
         if (args.length != 3) {
-            BackendProcess.logging("\nErr\nUsage: java BackendProcess [websocket_port] [socket_url] [socket_port]");
+            BackendProcess.logging(
+                "\nErr\nUsage: java BackendProcess [websocket_port] [socket_url] [socket_port]");
             System.exit(1);
         }
         final String webSocketPort = args[0];
+        final String socketUrl = args[1];
+        int socketPort;
+        try {
+            socketPort = Integer.parseInt(args[2]);
+        } catch (NumberFormatException e) {
+            logging("illegal number was given as socket_port. use default port 8081");
+            socketPort = SOCKET_PORT;
+        }
 
         System.out.println(webSocketPort);
 
@@ -40,8 +49,9 @@ public class BackendProcess {
 
         webSocketClient.sendText("{\"INFO\":\"BackendProcess connected\"}");
 
-        InetAddress address = InetAddress.getByName("localhost");
-        Socket socket = new Socket(address, SOCKET_PORT);
+        // InetAddress address = InetAddress.getByName("localhost");
+        InetAddress address = InetAddress.getByName(socketUrl);
+        Socket socket = new Socket(address, socketPort);
 
         listener = new ContentReceiver(socket, (text) -> { webSocketClient.sendText(text); });
         listener.start();
