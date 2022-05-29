@@ -55,7 +55,7 @@ public class MessageParser {
             return MessageType.ERROR;
         }
 
-        var unsafeType = header.get("hoge");
+        Object unsafeType = header.get("hoge");
         if (unsafeType == null) {
             return MessageType.ERROR;
         }
@@ -198,6 +198,10 @@ public class MessageParser {
             }
         } catch (ArrayIndexOutOfBoundsException e) {
             System.out.println("[MessageParser] parse error. ignore this message.");
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.out.println("[MessageParser] parse error. ignore this message.");
+            e.printStackTrace();
         }
 
         // return new JsonProperty(content);
