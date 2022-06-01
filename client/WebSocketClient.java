@@ -28,9 +28,9 @@ public class WebSocketClient {
         WebSocket.Listener listener = new WebSocket.Listener() {
             @Override
             public CompletionStage<?> onText(WebSocket webSocket, CharSequence data, boolean last) {
-                System.out.println("onText invoked. new data:");
-                System.out.println(data);
-                System.out.println("");
+                //System.out.println("onText invoked. new data:");
+                //System.out.println(data);
+                //System.out.println("");
 
                 onMessage.accept(data.toString());
 

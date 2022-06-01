@@ -43,7 +43,7 @@ public class BackendProcess {
         System.out.println(webSocketPort);
 
         WebSocketClient webSocketClient = new WebSocketClient(webSocketPort, (text) -> {
-            System.out.println("got message from js server: " + text);
+            //System.out.println("got message from js server: " + text);
             listener.sendMessageToServer(text);
         });
 
@@ -84,7 +84,7 @@ class ContentReceiver extends Thread {
                 String newText = in.readLine();
                 if (newText.equals("END"))
                     break;
-                System.out.println("new message from server: " + newText);
+                //System.out.println("new message from server: " + newText);
                 onMessage.accept(newText);
             }
         } catch (Exception e) {

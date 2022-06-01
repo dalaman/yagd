@@ -53,8 +53,8 @@ class Session extends Thread {
                 if (newText.equals("END"))
                     break;
 
-                System.out.println("received new message on " + socket);
-                System.out.println("content: " + newText);
+                //System.out.println("received new message on " + socket);
+                //System.out.println("content: " + newText);
                 onReceiveMessage.accept(newText);
                 // SessionManager.updateModel(newText, this.id);
             }
