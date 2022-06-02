@@ -1,8 +1,8 @@
 # yagd
 
--   ...
--   ...
--   ...
+![Demo](docs/demo.gif)
+
+* [Website](https://dalaman.github.io/yagd/)
 
 ## Requirements
 
